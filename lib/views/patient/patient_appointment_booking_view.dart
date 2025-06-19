@@ -7,6 +7,7 @@ import 'package:docify/utilities/global_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart'; // Add this import
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
@@ -24,16 +25,26 @@ class _PatientAppointmentBookingViewState
   AppointmentProvider get appointmentProvider =>
       context.read<AppointmentProvider>();
   DateTime? pickedDateTime;
+  bool _isLocaleInitialized = false; // Add this flag
 
   @override
   void initState() {
     super.initState();
+    _initializeLocale(); // Initialize locale first
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final args = ModalRoute.of(context)!.settings.arguments;
       setState(() {
         doctor = args as DoctorModel;
       });
+    });
+  }
+
+  // Add this method to initialize Indonesian locale
+  Future<void> _initializeLocale() async {
+    await initializeDateFormatting('id_ID', null);
+    setState(() {
+      _isLocaleInitialized = true;
     });
   }
 
@@ -260,6 +271,15 @@ class _PatientAppointmentBookingViewState
     );
   }
 
+  // Add this helper method to format date safely
+  String _formatDate(DateTime date) {
+    if (!_isLocaleInitialized) {
+      // Fallback to default format if locale not initialized
+      return DateFormat('EEEE, dd MMMM yyyy').format(date);
+    }
+    return DateFormat('EEEE, dd MMMM yyyy', 'id_ID').format(date);
+  }
+
   Widget _buildDateTimeSelector() {
     return Container(
       padding: EdgeInsets.all(20),
@@ -336,8 +356,7 @@ class _PatientAppointmentBookingViewState
                       SizedBox(height: 2),
                       Text(
                         pickedDateTime != null
-                            ? DateFormat('EEEE, dd MMMM yyyy', 'id_ID')
-                                .format(pickedDateTime!)
+                            ? _formatDate(pickedDateTime!) // Use the safe format method
                             : 'Pilih tanggal',
                         style: GoogleFonts.openSans(
                           fontSize: 16,
