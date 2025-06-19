@@ -19,7 +19,8 @@ class PatientCard extends StatelessWidget {
     final fotoUrl = patient.foto;
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      // FIXED: Removed horizontal margin to prevent overflow
+      margin: const EdgeInsets.symmetric(vertical: 10),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
@@ -66,56 +67,60 @@ class PatientCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
 
-                Row(
-                  children: [
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          RouteConstant.admin_patientDetailView,
-                          arguments: patient,
-                        );
-                      },
-                      icon: const Icon(Icons.info_outline, size: 18),
-                      label: const Text("Detail"),
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                        textStyle: GoogleFonts.openSans(fontSize: 13),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                // FIXED: Added horizontal scrolling for buttons
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            RouteConstant.admin_patientDetailView,
+                            arguments: patient,
+                          );
+                        },
+                        icon: const Icon(Icons.info_outline, size: 18),
+                        label: const Text("Detail"),
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Theme.of(context).colorScheme.primary,
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          textStyle: GoogleFonts.openSans(fontSize: 13),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          elevation: 1,
                         ),
-                        elevation: 1,
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        showDocifyDialog(
-                          context: context,
-                          content: const Text('Apakah anda yakin ingin menghapus pasien ini?'),
-                          confirmLabel: 'Hapus',
-                          confirmColor: Colors.red,
-                          cancelLabel: 'Batal',
-                          onConfirm: onDelete,
-                          onCancel: () => Navigator.pop(context),
-                        );
-                      },
-                      icon: const Icon(Icons.delete_outline, size: 18),
-                      label: const Text("Hapus"),
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.red,
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                        textStyle: GoogleFonts.openSans(fontSize: 13),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                      const SizedBox(width: 8),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          showDocifyDialog(
+                            context: context,
+                            content: const Text('Apakah anda yakin ingin menghapus pasien ini?'),
+                            confirmLabel: 'Hapus',
+                            confirmColor: Colors.red,
+                            cancelLabel: 'Batal',
+                            onConfirm: onDelete,
+                            onCancel: () => Navigator.pop(context),
+                          );
+                        },
+                        icon: const Icon(Icons.delete_outline, size: 18),
+                        label: const Text("Hapus"),
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.red,
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          textStyle: GoogleFonts.openSans(fontSize: 13),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          elevation: 1,
                         ),
-                        elevation: 1,
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
